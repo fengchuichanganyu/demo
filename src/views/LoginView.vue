@@ -26,17 +26,19 @@
           @click="submitForm(ruleFormRef)"
           >登录</el-button
         >
-        <el-button class="loginbtn" @click="resetForm(ruleFormRef)"
-          >重置</el-button
-        >
+        <el-button class="loginbtn" @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
+import { defineComponent, reactive, toRefs, ref } from 'vue'
 import { LoginData } from '../type/login'
+import type { FormInstance } from 'element-plus'
+import { login } from '../request/api'
+
 export default defineComponent({
   setup() {
     const data = reactive(new LoginData())
@@ -70,7 +72,36 @@ export default defineComponent({
         },
       ],
     }
-    return { ...toRefs(data), rules }
+    //登录
+    const ruleFormRef = ref<FormInstance>()
+    const router = useRouter()
+    const submitForm = async (formEl: FormInstance | undefined) => {
+      // console.log(formEl)
+      if (!formEl) return
+      //对表单的内容验证
+      //valid为布尔类型
+      formEl.validate(async (valid) => {
+        if (valid) {
+          // console.log(valid)
+          await login(data.ruleForm).then((res) => {
+            // console.log(res)
+            localStorage.setItem('token', res.data.token)
+            router.push('/')
+          })
+          // .catch((error) => {
+          //   console.log('wewqrw', error, 'qwewrfw')
+          // })
+        } else {
+          console.log('error submit!')
+        }
+      })
+    }
+    //重置
+    const resetForm = () => {
+      data.ruleForm.username = ''
+      data.ruleForm.password = ''
+    }
+    return { ...toRefs(data), submitForm, rules, ruleFormRef, resetForm }
   },
 })
 </script>

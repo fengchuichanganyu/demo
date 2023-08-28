@@ -20,7 +20,9 @@ service.interceptors.request.use((config) => {
 //相应拦截
 service.interceptors.response.use(
   (res) => {
-    const code: number = res.data.code
+    // console.log(res)
+    const code: number = res.data.data.code
+    console.log(code)
     if (code != 200) {
       return Promise.reject(res.data)
     }
@@ -30,3 +32,5 @@ service.interceptors.response.use(
     console.log(err)
   }
 )
+
+export default service
