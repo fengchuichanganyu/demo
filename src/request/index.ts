@@ -21,8 +21,9 @@ service.interceptors.request.use((config) => {
 service.interceptors.response.use(
   (res) => {
     // console.log(res)
-    const code: number = res.data.data.code
-    console.log(code)
+    const code: number = res.data.code //请求列表返回参数
+    // const code: number = res.data.data.code //登录返回参数
+    // console.log(code)
     if (code != 200) {
       return Promise.reject(res.data)
     }
