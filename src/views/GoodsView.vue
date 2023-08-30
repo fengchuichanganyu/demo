@@ -15,21 +15,86 @@
         </el-form-item>
       </el-form>
     </div>
+    <el-table :data="dataList.comList" border style="width: 100%">
+      <el-table-column prop="id" label="ID" width="180" />
+      <el-table-column prop="title" label="标题" width="180" />
+      <el-table-column prop="introduce" label="详情" />
+    </el-table>
+    <el-pagination
+      @size-change="sizeChange"
+      @current-change="currentChange"
+      layout="prev, pager, next"
+      :total="selectData.count * 2"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, toRefs, computed, watch } from 'vue'
 import { getGoodsList } from '../request/api'
-import { InitData } from '../type/goods'
+import { InitData, ListInt } from '../type/goods'
+import { da } from 'element-plus/es/locale'
 export default defineComponent({
   setup() {
     const data = reactive(new InitData())
     getGoodsList().then((res) => {
-      console.log(res)
+      // console.log(res)
+      data.list = res.data
+      data.selectData.count = res.data.length
+      // console.log(data.selectData.count)
     })
 
-    return { ...toRefs(data) }
+    const dataList = reactive({
+      comList: computed(() => {
+        return data.list.slice(
+          (data.selectData.page - 1) * data.selectData.pagesize,
+          data.selectData.page * data.selectData.pagesize
+        )
+      }),
+    })
+    const sizeChange = (pagesize: number) => {
+      data.selectData.pagesize = pagesize
+    }
+    const currentChange = (page: number) => {
+      data.selectData.page = page
+    }
+
+    const onSubmit = () => {
+      // console.log(data.selectData.title)
+      let arr: ListInt[] = []
+      if (data.selectData.introduce || data.selectData.title) {
+        if (data.selectData.introduce) {
+          arr = data.list.filter((value) => {
+            return value.introduce.indexOf(data.selectData.introduce) !== -1
+          })
+        }
+        if (data.selectData.title) {
+          arr = data.list.filter((value) => {
+            return value.title.indexOf(data.selectData.title) !== -1
+          })
+        }
+      } else {
+        arr = data.list
+      }
+      data.selectData.count = arr.length
+      data.list = arr
+    }
+
+    watch(
+      [() => data.selectData.title, () => data.selectData.introduce],
+      () => {
+        if (data.selectData.title == '' && data.selectData.introduce == '') {
+          getGoodsList().then((res) => {
+            // console.log(res)
+            data.list = res.data
+            data.selectData.count = res.data.length
+            // console.log(data.selectData.count)
+          })
+        }
+      }
+    )
+
+    return { ...toRefs(data), sizeChange, currentChange, dataList, onSubmit }
   },
 })
 </script>
