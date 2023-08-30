@@ -30,19 +30,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, computed, watch } from 'vue'
+import {
+  defineComponent,
+  reactive,
+  toRefs,
+  computed,
+  watch,
+  onMounted,
+} from 'vue'
 import { getGoodsList } from '../request/api'
 import { InitData, ListInt } from '../type/goods'
-import { da } from 'element-plus/es/locale'
 export default defineComponent({
   setup() {
     const data = reactive(new InitData())
-    getGoodsList().then((res) => {
-      // console.log(res)
-      data.list = res.data
-      data.selectData.count = res.data.length
-      // console.log(data.selectData.count)
+    onMounted(() => {
+      getGoods()
     })
+    const getGoods = () => {
+      getGoodsList().then((res) => {
+        // console.log(res)
+        data.list = res.data
+        data.selectData.count = res.data.length
+        // console.log(data.selectData.count)
+      })
+    }
 
     const dataList = reactive({
       comList: computed(() => {
