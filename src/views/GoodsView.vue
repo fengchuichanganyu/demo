@@ -95,12 +95,7 @@ export default defineComponent({
       [() => data.selectData.title, () => data.selectData.introduce],
       () => {
         if (data.selectData.title == '' && data.selectData.introduce == '') {
-          getGoodsList().then((res) => {
-            // console.log(res)
-            data.list = res.data
-            data.selectData.count = res.data.length
-            // console.log(data.selectData.count)
-          })
+          getGoods()
         }
       }
     )
