@@ -137,11 +137,13 @@ export default defineComponent({
         id: row.id,
         nickName: row.nickName,
         userName: row.userName,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         role: row.role.map((value: any) => value.role || value.roleId),
       }
     }
     const updateUser = () => {
       console.log(data.active)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let obj: any = data.list.find((value) => value.id == data.active.id)
       obj.nickName = data.active.nickName
       obj.role = data.roleList.filter(
