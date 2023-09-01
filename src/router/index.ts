@@ -1,3 +1,4 @@
+import { fa } from 'element-plus/es/locale'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
@@ -39,6 +40,18 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () =>
           import(/* webpackChunkName: "role" */ '../views/RoleView.vue'),
+      },
+      {
+        path: 'authority',
+        name: 'authority',
+        meta: {
+          isShow: false,
+          title: '权限列表',
+        },
+        component: () =>
+          import(
+            /* webpackChunkName: "authority" */ '../views/AuthorityView.vue'
+          ),
       },
     ],
   },
