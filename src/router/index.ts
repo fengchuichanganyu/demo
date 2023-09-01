@@ -1,10 +1,10 @@
-import { fa } from 'element-plus/es/locale'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
+    redirect: 'goods',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -71,4 +71,12 @@ const router = createRouter({
   routes,
 })
 
+router.beforeEach((to, from, next) => {
+  const token: string | null = localStorage.getItem('token')
+  if (!token && to.path !== '/login') {
+    next('/login')
+  } else {
+    next()
+  }
+})
 export default router
